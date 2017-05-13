@@ -9,7 +9,6 @@ from text_lstm import lstm_unroll,bi_lstm_unroll
 from io import BytesIO
 from captcha.image import ImageCaptcha
 import cv2, random
-#from text_io import BucketimageIter, default_build_vocab
 from text_bucketing_iter import TextIter
 
 
@@ -24,9 +23,6 @@ def get_label(buf):
 
 
 BATCH_SIZE = 20
-# SEQ_LENGTH = 80
-SEQ_LENGTH = 17
-
 def ctc_label(p):
     ret = []
     p1 = [0] + p
@@ -105,7 +101,7 @@ if __name__ == '__main__':
     def norm_stat(d):
         return mx.nd.norm(d)/np.sqrt(d.size)
     mon = mx.mon.Monitor(100, norm_stat)     
-    prefix='model/cocotext'
+    prefix='model/icdar2013'
 
     model.fit(
         train_data          = data_train,
@@ -120,4 +116,6 @@ if __name__ == '__main__':
         initializer         = mx.init.Xavier(factor_type="in", magnitude=2.34),
         num_epoch           = num_epoch,
         epoch_end_callback =mx.callback.do_checkpoint(prefix),
-        batch_end_callback  = mx.callback.Speedometer(BATCH_SIZE, 50))
+        batch_end_callback  = mx.callback.Speedometer(BATCH_SIZE, 50),
+        begin_epoch=0
+        )
