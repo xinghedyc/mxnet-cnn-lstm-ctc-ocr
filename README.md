@@ -21,8 +21,10 @@ the main difference is that I use resnet as the cnn part in the architecture.
   test_root='/cache/icdar2013_word'
 ```
 # train the model
+  make_list.py is to generate .lst file for recording image paths and corresponding labels and idx2char.json,char2idx.json for recording index and char's correspondence ,
   run this in your terminal:
 ```
+mkdir model
 python text_deep_ocr_bucketing.py
 ```
 # results 
