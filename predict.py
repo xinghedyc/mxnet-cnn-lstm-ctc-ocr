@@ -90,7 +90,7 @@ def sym_gen(seq_len):
 BATCH_SIZE = 1
 num_hidden = 256
 num_lstm_layer = 2
-num_label = 25
+num_label = 10
 contexts = [mx.gpu(0)]
 init_c = [('l%d_init_c' % l, (BATCH_SIZE, num_hidden)) for l in range(num_lstm_layer)]
 init_h = [('l%d_init_h' % l, (BATCH_SIZE, num_hidden)) for l in range(num_lstm_layer)]
@@ -119,7 +119,8 @@ data = get_data_batch(data_root, image)
 hight = data.shape[2]
 width = data.shape[3]
 bucket_key = width / hight * 4
-label = np.array([[0] * 25])
+# label_length should be consistant with num_label whether in training or predicting. 
+label = np.array([[0] * 10])
 data_all = [mx.nd.array(data)] + init_state_arrays
 label_all = [mx.nd.array(label)]
 data_names = ['data'] + init_state_names
