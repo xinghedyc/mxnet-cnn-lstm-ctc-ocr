@@ -1,28 +1,16 @@
 # pylint: disable=C0111,too-many-arguments,too-many-instance-attributes,too-many-locals,redefined-outer-name,fixme
 # pylint: disable=superfluous-parens, no-member, invalid-name
 import sys, random
-#sys.path.insert(0, "../../python")
 import numpy as np
 import mxnet as mx
 
 from text_lstm import lstm_unroll,bi_lstm_unroll
 from io import BytesIO
-from captcha.image import ImageCaptcha
 import cv2, random
 from text_bucketing_iter import TextIter
 
-
-
-def get_label(buf):
-    ret = np.zeros(4)
-    for i in range(len(buf)):
-        ret[i] = 1 + int(buf[i])
-    if len(buf) == 3:
-        ret[3] = 0
-    return ret
-
-
 BATCH_SIZE = 20
+
 def ctc_label(p):
     ret = []
     p1 = [0] + p
@@ -107,7 +95,7 @@ if __name__ == '__main__':
         train_data          = data_train,
         eval_data           = data_val,
         eval_metric         = mx.metric.np(Accuracy),
-        #kvstore             = args.kv_store,
+        #kvstore            = args.kv_store,
         optimizer           = 'sgd',
         optimizer_params    = { 'learning_rate': 0.005,
                                 'momentum': 0.9,
@@ -115,7 +103,7 @@ if __name__ == '__main__':
         kvstore             = 'device',
         initializer         = mx.init.Xavier(factor_type="in", magnitude=2.34),
         num_epoch           = num_epoch,
-        epoch_end_callback =mx.callback.do_checkpoint(prefix),
+        epoch_end_callback  = mx.callback.do_checkpoint(prefix),
         batch_end_callback  = mx.callback.Speedometer(BATCH_SIZE, 50),
         begin_epoch=0
         )
