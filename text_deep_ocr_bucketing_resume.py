@@ -1,27 +1,13 @@
 # pylint: disable=C0111,too-many-arguments,too-many-instance-attributes,too-many-locals,redefined-outer-name,fixme
 # pylint: disable=superfluous-parens, no-member, invalid-name
 import sys, random
-#sys.path.insert(0, "../../python")
 import numpy as np
 import mxnet as mx
 
 from text_lstm import lstm_unroll,bi_lstm_unroll
 from io import BytesIO
-from captcha.image import ImageCaptcha
 import cv2, random
-#from text_io import BucketimageIter, default_build_vocab
 from text_bucketing_iter import TextIter
-
-
-
-def get_label(buf):
-    ret = np.zeros(4)
-    for i in range(len(buf)):
-        ret[i] = 1 + int(buf[i])
-    if len(buf) == 3:
-        ret[3] = 0
-    return ret
-
 
 BATCH_SIZE = 20
 
@@ -46,7 +32,6 @@ def remove_blank(l):
 
 def Accuracy(label, pred):
     global BATCH_SIZE
-    global SEQ_LENGTH
     hit = 0.
     total = 0.
     for i in range(BATCH_SIZE):
@@ -70,13 +55,11 @@ def Accuracy(label, pred):
 if __name__ == '__main__':
     num_hidden = 256
     num_lstm_layer = 2
-    #batch_size=200
     num_epoch = 200
     learning_rate = 0.01
     momentum = 0
     num_label = 10
     contexts = [mx.gpu(0)]
-
     def sym_gen(seq_len):
         return bi_lstm_unroll(seq_len,
                            num_hidden=num_hidden,
@@ -127,7 +110,7 @@ if __name__ == '__main__':
                               'wd': 0 },
         arg_params=arg_params, 
         aux_params=aux_params,
-        #epoch_end_callback =mx.callback.do_checkpoint(prefix),
+        epoch_end_callback =mx.callback.do_checkpoint(prefix),
         batch_end_callback  = mx.callback.Speedometer(BATCH_SIZE, 50),
         begin_epoch=100,
         )
